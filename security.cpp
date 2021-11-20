@@ -29,14 +29,14 @@ string decrypt(string cipher, string key);
 
 int main(int argc, char** argv)
 {
-    
+
     string operation = argv[1];
     string data = argv[2];
     string key = argv[3];
 
 
-    
-    
+
+
     if(operation == "encrypt")
     {
         cout<<"cipher: "<<encrypt(data,key);
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
         cout<<"plain: "<<decrypt(data,key);
     }
     return 0;
-    
+
 }
 
 
@@ -74,7 +74,8 @@ string makePermutation(string s, int permutationKey [],int permutationkeysize)
 string Hexa2Binary(string s)
 {
     string binary = "";
-    for(int i=0;i<s.size();i++)
+    int l = s.size();
+    for(int i=0;i<l;i++)
     {
         if(s[i]=='0') binary += "0000";
         else if (s[i]=='1') binary += "0001";
@@ -103,7 +104,7 @@ string Binary2Hexa(string s)
     for (int i = 0; i < 16; i++)
     {
         string val = s.substr(i*4,4);
-        
+
         if(val=="0000")hexa+="0";
         else if(val=="0001")hexa+="1";
         else if(val=="0010")hexa+="2";
@@ -120,11 +121,11 @@ string Binary2Hexa(string s)
         else if(val=="1101")hexa+="D";
         else if(val=="1110")hexa+="E";
         else if(val=="1111")hexa+="F";
-        
-        
+
+
     }
     return hexa;
-    
+
 }
 
 string shift_left(string previouskey, int shiftamount)
@@ -175,7 +176,7 @@ string permutedchoice1(string key)
                                        14, 6, 61, 53, 45, 37, 29,
                                        21, 13, 5, 28, 20, 12, 4 };
 
-    
+
     string output = makePermutation(key,permutedchoice1_table,56);
     return output;
 }
@@ -199,7 +200,7 @@ string permutedchoice2(string key)
 
 string initialpermutation(string plaintext)
 {
-    
+
     int intialpermutation_table[64] = { 58, 50, 42, 34, 26, 18, 10, 2,
                                       60, 52, 44, 36, 28, 20, 12, 4,
                                       62, 54, 46, 38, 30, 22, 14, 6,
@@ -258,7 +259,7 @@ string * generate_all_keys(string key)
         allkeys[i] = permutedchoice2(k);
         key = k;
 
-        
+
 
     }
     return allkeys;
@@ -306,6 +307,7 @@ int column(string four_bits)
     else if(four_bits=="1101")return 13;
     else if(four_bits=="1110")return 14;
     else if(four_bits=="1111")return 15;
+    else return 0;
 }
 
 int row(string two_bits)
@@ -314,6 +316,7 @@ int row(string two_bits)
     else if(two_bits=="01")return 1;
     else if(two_bits=="10")return 2;
     else if(two_bits=="11")return 3;
+    else return 0;
 }
 
 string s_box_permutation(string s)
@@ -326,7 +329,7 @@ string s_box_permutation(string s)
                           3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5,
                           0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15,
                           13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9 },
- 
+
                         { 10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8,
                           13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1,
                           13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7,
@@ -362,10 +365,10 @@ string s_box_permutation(string s)
         column_key = key.substr(1,4);
         //cout<<column_key<<endl;
         output += dec2bin(s_box_table [i][row(row_key)][column(column_key)]);
-    
+
     }
     return output;
-    
+
 }
 
 string straightpermutation(string text)
@@ -380,21 +383,22 @@ string straightpermutation(string text)
                     22, 11, 4, 25 };
 
     string output = makePermutation(text,straightpermutation_table,32);
-    return output;                
+    return output;
 }
 
 string XOR(string x, string y)
 {
     string output = "";
+    int l = x.size();
     if(x.size() == y.size())
     {
-        
-        for (int i = 0; i < x.size(); i++)
+
+        for (int i = 0; i < l; i++)
         {
             if(x[i]==y[i])output+="0";
             else output+="1";
         }
-        
+
     }
     else cout<<"Error, inputs size to xor does not match";
     return output;
@@ -416,7 +420,7 @@ string encryption_round(string text,string key)
     string left_out = right_in;
     string right_out = XOR(left_in,F(right_in,key));
     return left_out+right_out;
-    
+
 }
 
 string decryption_round(string cipher, string key)
